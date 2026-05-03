@@ -43,7 +43,10 @@ npm run dev
 
 ### スクリーンショット
 
-> 🚧 ここに **デモ GIF または静止画** を1枚貼ってください。`docs/screenshot.png` などに置いて `![demo](./docs/screenshot.png)` で参照するのが標準です。
+<!-- TODO: docs/screenshot.png または docs/demo.gif を追加 → この行を画像参照に置き換え -->
+<!-- 例: ![Underworld demo](./docs/demo.gif) -->
+
+> 🚧 デモ画像/GIF はまだ準備中です。撮ってくれる方は [Issue #1](https://github.com/taishi-kan/underworld-oss/issues/1) を見てください (Good first issue)。撮り方のガイドは [`docs/README.md`](./docs/README.md) にあります。
 
 ### このリポジトリについて
 

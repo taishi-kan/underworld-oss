@@ -43,57 +43,60 @@ interface ExpertMcpConfig {
 
 /**
  * Expert に紐づく MCP 設定を Seed + .env.local から組み立てる。
- * - mcp_connection_id が無い / 未対応 type → 空オブジェクト
- * - 必須 env_keys が未設定 → 警告ログを出して空オブジェクトを返す (ツールなしで起動)
+ * 1人の Expert が複数の MCP を持てる (例: GitHub + Sentry + Filesystem)。
+ * - 紐付けが無い → 空オブジェクト
+ * - 個別の MCP で env 不足 → その MCP だけスキップ (他は接続される)
+ * - 旧フィールド `mcp_connection_id` (単数) も互換のため吸収する
  */
 function buildMcpConfigForExpert(expert: Expert): ExpertMcpConfig {
-  if (!expert.mcp_connection_id) return {};
+  // 旧 (単数) と新 (複数) のフィールドを統合
+  const ids: string[] = expert.mcp_connection_ids
+    ?? (expert.mcp_connection_id ? [expert.mcp_connection_id] : []);
+  if (ids.length === 0) return {};
 
-  const conn = seed.mcp_connections.find(
-    (c) => c.id === expert.mcp_connection_id
-  ) as MCPConnection | undefined;
-  if (!conn) {
-    console.warn(`[mcp] expert=${expert.id}: 接続定義 "${expert.mcp_connection_id}" がSeedに無い`);
-    return {};
+  const mcpServers: Record<string, StdioMcpServer> = {};
+  const allowedTools: string[] = [];
+
+  for (const id of ids) {
+    const conn = seed.mcp_connections.find((c) => c.id === id) as MCPConnection | undefined;
+    if (!conn) {
+      console.warn(`[mcp] expert=${expert.id}: 接続定義 "${id}" がSeedに無い → このMCPだけスキップ`);
+      continue;
+    }
+    if (conn.type !== 'stdio' || !conn.command) {
+      // mock / http / sse は現状未対応 (将来拡張)
+      continue;
+    }
+
+    // 必須 env を resolve (1個でも欠けたらこの MCP は丸ごとスキップ)
+    const env: Record<string, string> = {};
+    const missing: string[] = [];
+    for (const k of conn.env_keys ?? []) {
+      const v = process.env[k];
+      if (v) env[k] = v;
+      else missing.push(k);
+    }
+    if (missing.length > 0) {
+      console.warn(
+        `[mcp] expert=${expert.id} conn=${conn.id}: 環境変数未設定 (${missing.join(', ')}) → このMCPだけツールなし扱い`
+      );
+      continue;
+    }
+
+    // SDK 上のサーバ名は接続ID末尾の "-mcp" を落とす ("github-mcp" → "github")
+    const serverName = conn.id.replace(/-mcp$/, '');
+    mcpServers[serverName] = {
+      command: conn.command,
+      args: conn.args ?? [],
+      env,
+    };
+    for (const t of conn.allowed_tools ?? []) {
+      allowedTools.push(`mcp__${serverName}__${t}`);
+    }
   }
-  if (conn.type !== 'stdio' || !conn.command) {
-    // mock / http / sse は現状未対応 (将来拡張)
-    return {};
-  }
 
-  // 必須 env を resolve
-  const env: Record<string, string> = {};
-  const missing: string[] = [];
-  for (const k of conn.env_keys ?? []) {
-    const v = process.env[k];
-    if (v) env[k] = v;
-    else missing.push(k);
-  }
-  if (missing.length > 0) {
-    console.warn(
-      `[mcp] expert=${expert.id} conn=${conn.id}: 環境変数未設定 (${missing.join(', ')}) → ツールなしで起動`
-    );
-    return {};
-  }
-
-  // SDK 上のサーバ名は接続ID末尾の "-mcp" を落とす ("github-mcp" → "github")
-  const serverName = conn.id.replace(/-mcp$/, '');
-
-  // ホワイトリスト: "mcp__<server>__<tool>" 形式に組み立て
-  const allowedTools = (conn.allowed_tools ?? []).map(
-    (t) => `mcp__${serverName}__${t}`
-  );
-
-  return {
-    mcpServers: {
-      [serverName]: {
-        command: conn.command,
-        args: conn.args ?? [],
-        env,
-      },
-    },
-    allowedTools,
-  };
+  if (Object.keys(mcpServers).length === 0) return {};
+  return { mcpServers, allowedTools };
 }
 
 // SSE 1イベント書き込み
@@ -211,7 +214,8 @@ export async function POST(req: NextRequest) {
         await Promise.all(
           selected.map(async (e) => {
             const mcp = buildMcpConfigForExpert(e);
-            const hasMcp = !!mcp.mcpServers && Object.keys(mcp.mcpServers).length > 0;
+            const connectedServers = mcp.mcpServers ? Object.keys(mcp.mcpServers) : [];
+            const hasMcp = connectedServers.length > 0;
 
             const sys = [
               `あなたは "${e.name}"。${e.role} の専門家AIです。`,
@@ -221,9 +225,10 @@ export async function POST(req: NextRequest) {
               ...(hasMcp
                 ? [
                     ``,
-                    `あなたは GitHub MCP に接続されており、read-only でリポジトリ・Issue・PR・コードを参照できます。`,
-                    `ユーザの相談に repo/issue/PR/code の具体名や URL が含まれる場合は、関連する情報を取得してから意見を述べてください。`,
-                    `URL や repo 名が無く、調査が不要な相談 (一般的な設計議論など) では、ツールを呼ばず通常の意見だけで答えてください。`,
+                    `あなたは以下の MCP に接続されており、相談に必要な情報を実際のソースから取得できます: ${connectedServers.join(', ')}`,
+                    `ユーザの相談に具体的な対象 (URL / 名前 / ID 等) が含まれる場合は、関連 MCP のツールを呼んで実データを取得してから意見を述べてください。`,
+                    `対象が含まれず一般的な設計議論で十分な場合は、ツールを呼ばず通常の意見だけで答えてください。`,
+                    `すべて read-only にホワイトリスト化されているので、書き込み・削除・送信などの破壊的操作はできません (してはいけません)。`,
                   ]
                 : []),
               ``,

@@ -157,7 +157,7 @@
         "tone": "論理的で簡潔",
         "style": "計測可能な改善を優先する"
       },
-      "mcp_connection_id": "github-mcp",
+      "mcp_connection_ids": ["github-mcp"],
       "status": "available",
       "permissions": {
         "can_read_user_prompt": true,

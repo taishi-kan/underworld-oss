@@ -155,6 +155,7 @@ export default function Page() {
           experts={experts}
           statuses={statuses}
           selectedIds={selectedIds}
+          mcpConnections={seed.mcp_connections}
         />
       </Draggable>
 

@@ -123,11 +123,14 @@ npm run dev
 
 ## スクリーンショット
 
-![Underworld — 神聖なホログラム調の知識神殿。中央の魔法陣を囲んで Guide AI と4人の Expert AI が立ち、左に Expert List、右に Council Log、下に Consultation Input、左下に Nexus Gate、奥にテーマ別の扉が並ぶ。](./docs/screenshot.png)
+![Underworld — 神聖なホログラム調の知識神殿。中央の魔法陣を囲んで Guide AI と4人の Expert AI が立ち、左の Expert List では各 Expert のカードに繋がっている MCP がバッジで可視化されている (Engineering は cyan の "🔌 github" バッジ、Marketing/Copywriting/Design は amber の "🧪 sample" バッジ)。右に Council Log、下に Consultation Input、左下に Nexus Gate、奥にテーマ別の扉が並ぶ。](./docs/screenshot.png)
 
 > このスクショは Playwright で自動撮影しています。再撮影したいときは `npm run dev` を起動して、別ターミナルで `npm run screenshot` を実行してください。詳細は [`docs/README.md`](./docs/README.md)。
 
-> **絵について**: スクショには Marketing / Copywriting / Design Expert のキャラも立っていますが、上の MVP ステータス表のとおり、現状この3人は **MCP 未接続のサンプル** です。実際の "本物" は Engineering × GitHub MCP のみで、それも動作確認サンプル扱いです。
+> **絵の中の手がかり**:
+> - 🔌 **シアンのバッジ** = その Expert に MCP が接続されている (今は Engineering × GitHub のみ)
+> - 🧪 **琥珀色のバッジ** = persona しか持たないサンプル。MCP を繋げば本物になる
+> - Guide AI には MCP バッジが付きません (Expert選定の役で MCP 不要)
 
 ---
 
@@ -377,7 +380,7 @@ Final パネルの中身:
   "avatar": { "type": "hologram_jurist", "color": "#ffd29b", "symbol": "scale", "glow": "warm_gold" },
   "capabilities": ["contract_review", "tos_drafting", "compliance_check"],
   "persona": { "tone": "厳格で誠実", "style": "リスクを先に明示する" },
-  "mcp_connection_id": "mock-legal-mcp",
+  "mcp_connection_ids": ["legal-mcp"],
   "status": "available",
   "permissions": { "can_read_user_prompt": true, "requires_consent": true }
 }
@@ -439,11 +442,15 @@ GitHub MCP がデフォルトで入っていますが、同じパターンで **
 
 ### 8.5-3. 紐付ける Expert を決める
 
-その MCP を使わせたい Expert の `mcp_connection_id` をその ID に設定:
+その MCP を使わせたい Expert の `mcp_connection_ids` (配列) にその ID を入れる。
+**1人の Expert に複数 MCP を持たせられます** (例: Engineering が GitHub + Sentry + Filesystem を同時に持つ):
 
 ```jsonc
-{ "id": "design-expert", ..., "mcp_connection_id": "filesystem-mcp" }
+{ "id": "design-expert", ..., "mcp_connection_ids": ["filesystem-mcp"] }
+{ "id": "engineering-expert", ..., "mcp_connection_ids": ["github-mcp", "sentry-mcp", "filesystem-mcp"] }
 ```
+
+> 旧形式の `mcp_connection_id` (単数, string) も互換のため引き続き読めますが、新規エントリは `mcp_connection_ids` (配列) を推奨します。
 
 ### 8.5-4. dev 再起動
 

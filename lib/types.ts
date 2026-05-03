@@ -71,7 +71,16 @@ export interface Expert {
   avatar_manifest?: AvatarManifest;
   capabilities: string[];
   persona: ExpertPersona;
-  /** 紐付くMCP接続のID。MCPを使わないExpertでは undefined */
+  /**
+   * 紐付くMCP接続のID配列。1人のExpertに複数のMCPを持たせられる
+   * (例: Engineering Expert が GitHub + Sentry + Filesystem を同時に持つ)。
+   * MCPを使わないExpertでは undefined or 空配列。
+   */
+  mcp_connection_ids?: string[];
+  /**
+   * @deprecated `mcp_connection_ids` を使ってください。
+   * 旧Seed互換のために残してあります。指定された場合は1要素配列として扱われます。
+   */
   mcp_connection_id?: string;
   status: ExpertStatus;
   permissions: ExpertPermissions;

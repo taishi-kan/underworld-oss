@@ -24,6 +24,7 @@ export interface Strings {
 
   // ===== Expert list panel =====
   expert_list_title: string;
+  expert_badge_sample: string;
 
   // ===== Council log panel =====
   council_log_title: string;
@@ -82,6 +83,7 @@ export const STRINGS: Record<Lang, Strings> = {
     header_nexus: 'Nexus 接続世界',
 
     expert_list_title: '専門家AI',
+    expert_badge_sample: 'サンプル',
 
     council_log_title: 'Council Room',
     council_log_topic_prefix: 'テーマ:',
@@ -131,6 +133,7 @@ export const STRINGS: Record<Lang, Strings> = {
     header_nexus: 'NEXUS LINKS',
 
     expert_list_title: 'EXPERTS',
+    expert_badge_sample: 'sample',
 
     council_log_title: 'COUNCIL ROOM',
     council_log_topic_prefix: 'topic:',

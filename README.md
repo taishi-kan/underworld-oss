@@ -43,10 +43,9 @@ npm run dev
 
 ### スクリーンショット
 
-<!-- TODO: docs/screenshot.png または docs/demo.gif を追加 → この行を画像参照に置き換え -->
-<!-- 例: ![Underworld demo](./docs/demo.gif) -->
+![Underworld — 神聖なホログラム調の知識神殿。中央の魔法陣を囲んで Guide AI と4人の Expert AI が立ち、左に Expert List、右に Council Log、下に Consultation Input、左下に Nexus Gate、奥にテーマ別の扉が並ぶ。](./docs/screenshot.png)
 
-> 🚧 デモ画像/GIF はまだ準備中です。撮ってくれる方は [Issue #1](https://github.com/taishi-kan/underworld-oss/issues/1) を見てください (Good first issue)。撮り方のガイドは [`docs/README.md`](./docs/README.md) にあります。
+> このスクショは Playwright で自動撮影しています。再撮影したいときは `npm run dev` を起動して、別ターミナルで `npm run screenshot` を実行してください。詳細は [`docs/README.md`](./docs/README.md)。
 
 ### このリポジトリについて
 
@@ -499,7 +498,11 @@ underworld/
 │  ├─ upscale-bg.py               # Real-ESRGAN で 4倍 upscale
 │  ├─ generate-sprites.py         # キャラ生成
 │  ├─ generate-structures.py      # 扉生成
-│  └─ generate-bg-replicate.py    # 有料代替 (flux-1.1-pro-ultra)
+│  ├─ generate-bg-replicate.py    # 有料代替 (flux-1.1-pro-ultra)
+│  └─ capture-screenshot.mjs      # README用スクショ自動撮影 (Playwright)
+├─ docs/                          # README から参照される画像など
+│  ├─ README.md                   # スクショ撮影ガイド
+│  └─ screenshot.png              # ヒーロー画像 (npm run screenshot で更新)
 └─ public/sprites/                # 生成されたアセット
 ```
 
@@ -540,6 +543,20 @@ npm run dev
 - 自分の `.env.local` や個人トークンが含まれていないこと
 - アセットを再生成して PR に含める場合: `public/sprites/` の差分が意味的に必要か (容量肥大を避ける)
 - コードコメント / ドキュメントは **日本語** で書いてください (このプロジェクトの既定言語です)
+
+### スクリーンショットを更新したい
+
+UI に変更を入れたときは README のスクショも更新するのが望ましいです:
+
+```powershell
+# ターミナル1
+npm run dev
+
+# ターミナル2 (別ターミナル)
+npm run screenshot
+```
+
+Playwright (devDependencies) が `docs/screenshot.png` を 1920×1080 で自動撮影します。初回のみ `npx playwright install chromium` が必要 (~150MB)。
 
 ### バグ報告 / 機能要望
 

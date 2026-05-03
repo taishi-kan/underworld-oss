@@ -1,6 +1,6 @@
 # Underworld
 
-**専門家AIたちが集う「知識神殿」を、あなたのローカルPCで歩くオープンソース MVP。**
+**Seed 1枚から立ち上げて、自分の手で育てる "専門家AI コミュニティ"。**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
@@ -9,24 +9,102 @@
 
 ---
 
-## これは何？
+## このプロジェクトは何？
 
-Guide AI が受付をして、複数の **Expert AI** に同時に相談を投げ、**Synthesizer** が回答を統合してくれる、対話型の知識世界アプリです。
+ChatGPT や Claude が「単発のチャット」だとすると、Underworld は **長期にプロジェクトに帯同する "専門家チーム" をローカルに持つ** ためのツールです。
+4つの軸で他の AI アプリと違います。
 
-各 Expert は単なるロールプレイではなく、**専用の MCP (Model Context Protocol) サーバに接続することで、外部の実データを読みに行ける** 設計になっています。例えば Engineering Expert は GitHub MCP に繋がっており、相談に repo / issue / PR が含まれていれば、自動的にそれを読んでから意見を述べます。
+### 🛠 1. あなたの世界は、空っぽから始まる
+起動直後の Underworld には、あなたと Guide AI がいるだけ。
+**必要な専門家は、自分で MCP (= 道具袋) と一緒に召喚していく** のが Underworld の遊び方です。Seed (世界の設計図 JSON) 同梱の Expert は「同じパターンで自分のを作るための **手本サンプル**」で、不要なら捨てて構いません。
 
-> **コンセプトモチーフ**: SF的な "The Seed" — 1つの Seed (世界の設計図 JSON) を読み込むと、その世界に住む Expert AI 達が起動し、ユーザはその中を歩きながら相談できる。
+### 🔌 2. どんな MCP も「専門家」として迎えられる
+公式・サードパーティ・自作問わず、誰かが作った MCP サーバを Seed に1ブロック書くだけで、あなたの Underworld の住人になります。
+**MCP エコシステム全体** があなたの "募集中の人材プール" です。
 
-### 主な特徴
+### 👥 3. (将来) 1つのコミュニティに複数人で集まれる
+チーム全員が同じ Underworld にアクセスし、共通の Expert AI 達に相談する。Slack のように共有できる **"プロダクトに帯同する専門家チーム"** を目指しています。
+*(現在 MVP は単独利用、マルチユーザは設計中)*
 
-- 🏛️ **知識世界として可視化**: Phaser 4 の 1920×1080 ワールドに専門家がキャラとして居る (パネルもキャラもドラッグ可能)
-- 🤖 **本物の Claude が動く**: Claude Agent SDK 経由で、各 Expert を独立した persona + capabilities で実行
-- 🔌 **MCP プラガブル**: Seed の JSON に1ブロック追加するだけで新しい外部サービス (GitHub / Notion / Filesystem 等) に Expert を繋げられる
-- 🔐 **read-only がデフォルト**: 各 MCP は明示的に許可したツールしか使えない。書き込み事故が起きにくい
-- 💸 **無料パイプライン同梱**: 背景・キャラ・扉の生成に pollinations.ai + Real-ESRGAN を使うので、API 課金ゼロでアセット再生成できる
-- 🌐 **i18n**: 日本語 / 英語 UI 切替
+### 🌍 4. Seed で世界を共有・複製できる
+Seed は JSON 1枚なので、Git で配布したり、テンプレを公開したり、別の Underworld に引っ越したりできます。SF 的な "The Seed" モチーフから来ています。
 
-### Quick Start
+---
+
+## こんな場面で使う (想定シナリオ)
+
+「**自分のプロジェクトに帯同する、自分専用の専門家チーム**」が必要な場面で活きます。下記の Expert はあなた自身が Seed と MCP で組み立てるイメージです。
+
+### 🧑‍💻 1人 SaaS / 個人開発者
+全方位を自分でやらないといけない人。
+
+- **"Marketing Expert × Notion MCP"** を召喚 → 自分の Brand Doc を読ませて LP 改善案をもらう
+- **"SRE Expert × Sentry MCP"** を召喚 → 本番エラー TOP10 から直すべき優先順位を出してもらう
+- **"Code Reviewer × GitHub MCP"** を召喚 → 自分のリポの最近の PR から設計レビューを受ける
+
+毎回チャットに資料を貼り付けなくても、**Expert それぞれが自分のデータソースを持っていて、相談の度に取りに行ってくれる** のが効きます。
+
+### 🧪 OSS メンテナー / 小規模プロジェクト
+リポ周辺の Issue / Discussion / PR を一人で捌くのが辛い人。
+
+- **"Triage Expert × GitHub MCP"** を召喚 → 新着 Issue を バグ / Feature Request / 質問 に分類
+- **"Doc Reviewer × Filesystem MCP"** を召喚 → `docs/` 全体を読ませて整合性チェック
+- **"Roadmap Advisor × GitHub + Linear MCP"** を召喚 → Issue 数の推移と Plan を突き合わせて優先順位を相談
+
+### 🏢 ソロコンサル / フリーランス
+クライアントごとに **別の Underworld** を立てて、その案件のデータだけ見える専門家チームを構築する。
+
+- 「案件 A 用 Underworld」: クライアント A の Notion / Figma / GitHub に繋いだ Expert 達
+- 「案件 B 用 Underworld」: クライアント B の Slack / Drive / Asana に繋いだ Expert 達
+
+Seed (JSON 1枚) で世界が定義されるので、**案件ごとの切り替えが容易** です。
+
+---
+
+> **共通する旨味**
+> - **コンテキストの常駐**: 単発チャットだと毎回資料を貼り直す必要がある。Underworld の Expert は MCP 経由で "**いつでもデータを取りに行ける状態**" で待機している
+> - **専門家の使い分け**: 単一の Claude にあれこれ聞かせるより、persona と道具袋を分けたほうが回答の質が上がる
+> - **(将来) チームで共有**: 同じ Underworld にチームメイトがアクセスし、共通のアドバイザリーボードを持つ
+
+---
+
+## 今すぐ動かせるもの (MVP)
+
+### ✅ 仕組みとしては動くもの (基盤)
+
+| 機能 | 状態 |
+| --- | --- |
+| Seed (JSON) を読み込んで Underworld を起動 | ✅ |
+| Council Room の流れ: Guide が選定 → Expert が並列議論 → Synthesizer が統合 | ✅ |
+| MCP 配線 (Seed の `mcp_connection_id` で Expert に MCP を紐付ける仕組み) | ✅ |
+| 1920×1080 の世界ビュー (Phaser 4)、ドラッグ可能なパネル/キャラ | ✅ |
+| 日本語/英語 UI 切替 | ✅ |
+
+### 🧪 サンプルとして同梱されているもの (= ハリボテです)
+
+| Expert | 状態 |
+| --- | --- |
+| Guide AI | persona のみ。Expert 選定の役 (MCP 不要) |
+| Engineering Expert × GitHub MCP | 🧪 **MCP 配線の動作確認のために試しに繋いだだけ**。本格利用には相談設計が必要 |
+| Marketing / Copywriting / Design Expert | 🧪 persona のみ。MCP 未接続。Claude の一般知識で "演技" するだけ |
+
+> **なぜ Engineering × GitHub が同梱されているか**
+> MCP 配線が本当に通っているかを示すための **動作確認サンプル** として置いてあります。これ単体で完成品として使うものではなく、「**自分が同じパターンで他の MCP を繋ぐときの手本**」と思ってください。不要なら削除して構いません。
+
+### 🚀 これがメインの体験 (= ここからが本番)
+
+**あなた自身が、自分の仕事に必要な Expert を、必要な MCP と一緒に、自分で召喚する。**
+
+- 自分の Notion を読める Marketing Expert を作る
+- 自分の Figma を見られる Design Expert を作る
+- 自分の Sentry を見られる SRE Expert を作る
+- 自分の Linear を読めるプロジェクトマネージャーを作る
+
+Seed に1ブロック追加 + `.env.local` に鍵を1行 + dev 再起動、で1人召喚できます (詳細は下記の **Step 8.5「新しい MCP を追加する」**)。
+
+---
+
+## Quick Start
 
 ```powershell
 git clone https://github.com/taishi-kan/underworld-oss.git
@@ -41,13 +119,19 @@ npm run dev
 
 > **前提**: Node.js 18.18+ と、`claude` CLI でログイン済みの Anthropic アカウント、または `ANTHROPIC_API_KEY` の環境変数。詳しくは [Step 0〜1](#step-0--必要なもの-前提条件) を参照。
 
-### スクリーンショット
+---
+
+## スクリーンショット
 
 ![Underworld — 神聖なホログラム調の知識神殿。中央の魔法陣を囲んで Guide AI と4人の Expert AI が立ち、左に Expert List、右に Council Log、下に Consultation Input、左下に Nexus Gate、奥にテーマ別の扉が並ぶ。](./docs/screenshot.png)
 
 > このスクショは Playwright で自動撮影しています。再撮影したいときは `npm run dev` を起動して、別ターミナルで `npm run screenshot` を実行してください。詳細は [`docs/README.md`](./docs/README.md)。
 
-### このリポジトリについて
+> **絵について**: スクショには Marketing / Copywriting / Design Expert のキャラも立っていますが、上の MVP ステータス表のとおり、現状この3人は **MCP 未接続のサンプル** です。実際の "本物" は Engineering × GitHub MCP のみで、それも動作確認サンプル扱いです。
+
+---
+
+## このリポジトリについて
 
 このリポジトリは **`underworld-oss`** (オープンソース版) です。私 (taishi-wowwow) のローカル開発リポジトリは別途あり、そちらでの試行錯誤を経て安定したものをこちらへ反映していきます。
 
@@ -59,12 +143,12 @@ npm run dev
 
 ## 日本語ドキュメント (Step 0 〜 10)
 
-> **このプロジェクトは何？ (改めて)**
-> あなた専用の **ローカル PC で動く 1 人用アプリ** です。サーバにデプロイされた多人数サービスではありません。「コミュニティ」と呼んでいるのは、画面の中に住む **専門家AIたちの集合体** のこと。Guide AI が受付をして、複数の Expert AI に同時に相談を投げ、Synthesizer が回答を統合してくれます。
+> **手を動かす前に**
+> 上のセクションで Underworld の "目的" は伝えました。ここから下は、実際に動かすための **詳細な手順書** です。
 >
 > - 形式: Next.js 14 + Phaser 4 のローカル Web アプリ (`http://localhost:3000`)
 > - AI: 本物の Claude が裏で各専門家を演じる (Claude Agent SDK 経由)
-> - 保存: 一切なし。ブラウザを閉じれば会話は消えます (MVP仕様)
+> - MVP の制約: ブラウザを閉じれば会話は消えます (保存なし)、現状は単独利用 (マルチユーザは設計中)
 > - 想定OS: Windows 10/11 メイン。macOS / Linux でも基本動きますが、AI 4倍 upscale は Windows 限定
 
 以下のドキュメントは **Step 0 から Step 10 までの 11 ステップで通せる** ように書いてあります。順番にこなせば初見でも到達できます。

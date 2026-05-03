@@ -1,0 +1,39 @@
+# dependencies
+node_modules
+
+# next.js
+.next
+out
+dist
+
+# misc
+.DS_Store
+*.log
+
+# secrets (never commit these)
+.env
+.env.local
+.env*.local
+
+# deploy
+.vercel
+.turbo
+
+# typescript
+*.tsbuildinfo
+
+# Real-ESRGAN binary (auto-downloaded by upscale-bg.py)
+scripts/.realesrgan/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+Thumbs.db

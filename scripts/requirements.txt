@@ -1,0 +1,4 @@
+# Underworld のアセット生成スクリプト用 Python 依存
+# インストール:  pip install -r scripts/requirements.txt
+requests>=2.31
+Pillow>=10.0

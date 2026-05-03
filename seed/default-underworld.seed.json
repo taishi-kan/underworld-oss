@@ -1,0 +1,235 @@
+{
+  "seed_version": "0.1.0",
+  "world": {
+    "id": "aethra-underworld",
+    "name": "Aethra Underworld",
+    "description": "専門家AIたちが集う、神秘的な3D知識世界。",
+    "category": "general",
+    "visibility": "private",
+    "owner": "user_local",
+    "version": "0.1.0"
+  },
+  "theme": {
+    "visual_style": "sacred_hologram",
+    "world_type": "knowledge_temple",
+    "primary_color": "blue_white",
+    "mood": "mystical",
+    "core_symbol": "world_core"
+  },
+  "space_layout": {
+    "entry_point": "central_hall",
+    "areas": [
+      { "id": "central_hall", "name": "中央ホール", "type": "hall" },
+      { "id": "council_room", "name": "専門家会議室", "type": "meeting_room" },
+      { "id": "archive", "name": "ナレッジアーカイブ", "type": "knowledge_archive" },
+      { "id": "nexus_gate", "name": "Nexus Gate", "type": "world_portal" }
+    ]
+  },
+  "experts": [
+    {
+      "id": "guide-ai",
+      "name": "Guide AI",
+      "role": "受付・案内・専門家選定",
+      "category": "guide",
+      "avatar": {
+        "type": "hologram_guide",
+        "color": "#cfe9ff",
+        "symbol": "compass",
+        "glow": "soft_white"
+      },
+      "avatar_manifest": {
+        "type": "glb",
+        "model": "/models/guide_ai.glb",
+        "fallback": "sacred_hologram_placeholder",
+        "preset": "guide",
+        "primary_material": "pearl_white",
+        "accent_material": "soft_gold",
+        "glow_color": "holographic_blue",
+        "transparent_material": "glass_white",
+        "animated_parts": [
+          "Chest_Core",
+          "Halo_Ring_Outer",
+          "Halo_Ring_Inner",
+          "Guide_Symbol",
+          "Base_Light"
+        ],
+        "primary_color": "#f6faff",
+        "secondary_color": "#c8e4ff",
+        "core_color": "#5fb1ff",
+        "accent_color": "#e8d6a3",
+        "scale": 1.0,
+        "notes": "Underworldの案内人 / Knowledge Archivist。半人型ホログラム精霊。本体はBlender製 guide_ai.glb として制作し、R3F側はGLB読み込み・配置・発光演出・状態連動・fallbackのみ担当する。"
+      },
+      "capabilities": ["guide", "intent_routing", "expert_selection"],
+      "persona": {
+        "tone": "穏やかで導く",
+        "style": "落ち着いた一人称、相談者の視点に立つ"
+      },
+      "status": "available",
+      "permissions": {
+        "can_read_user_prompt": true,
+        "can_store_conversation": true,
+        "requires_consent": false
+      }
+    },
+    {
+      "id": "marketing-expert",
+      "name": "Marketing Expert",
+      "role": "事業戦略・訴求・導線設計",
+      "category": "marketing",
+      "avatar": {
+        "type": "hologram_strategist",
+        "color": "#7fdcff",
+        "symbol": "tactic_disc",
+        "glow": "blue_white"
+      },
+      "capabilities": ["strategy", "funnel_review", "offer_analysis", "audience_definition"],
+      "persona": {
+        "tone": "率直で構造的",
+        "style": "誰に何をなぜ届けるかを定義する"
+      },
+      "status": "available",
+      "permissions": {
+        "can_read_user_prompt": true,
+        "can_read_uploaded_files": true,
+        "requires_consent": true
+      }
+    },
+    {
+      "id": "copywriting-expert",
+      "name": "Copywriting Expert",
+      "role": "コピー・LP・CTA・広告文",
+      "category": "copywriting",
+      "avatar": {
+        "type": "hologram_scribe",
+        "color": "#a5e8ff",
+        "symbol": "light_pen",
+        "glow": "soft_cyan"
+      },
+      "capabilities": ["headline_generation", "lp_review", "cta_optimization", "ad_copy_generation"],
+      "persona": {
+        "tone": "実務的で鋭い",
+        "style": "結論ファースト、具体的に書き換える"
+      },
+      "status": "available",
+      "permissions": {
+        "can_read_user_prompt": true,
+        "can_read_uploaded_files": true,
+        "requires_consent": true
+      }
+    },
+    {
+      "id": "design-expert",
+      "name": "Design Expert",
+      "role": "UI・ビジュアル・視線誘導・世界観",
+      "category": "design",
+      "avatar": {
+        "type": "hologram_designer",
+        "color": "#bfd4ff",
+        "symbol": "color_ring",
+        "glow": "violet_white"
+      },
+      "capabilities": ["ui_review", "visual_direction", "banner_review", "layout_planning"],
+      "persona": {
+        "tone": "視覚的で繊細",
+        "style": "視線・余白・階層から判断する"
+      },
+      "status": "available",
+      "permissions": {
+        "can_read_user_prompt": true,
+        "can_read_uploaded_files": true,
+        "requires_consent": true
+      }
+    },
+    {
+      "id": "engineering-expert",
+      "name": "Engineering Expert",
+      "role": "実装・API・自動化・システム設計",
+      "category": "engineering",
+      "avatar": {
+        "type": "hologram_engineer",
+        "color": "#9affd6",
+        "symbol": "code_lattice",
+        "glow": "cyan_green"
+      },
+      "capabilities": ["implementation", "api_design", "automation", "performance_review", "github_repo_inspection"],
+      "persona": {
+        "tone": "論理的で簡潔",
+        "style": "計測可能な改善を優先する"
+      },
+      "mcp_connection_id": "github-mcp",
+      "status": "available",
+      "permissions": {
+        "can_read_user_prompt": true,
+        "can_read_uploaded_files": true,
+        "requires_consent": true
+      }
+    }
+  ],
+  "mcp_connections": [
+    {
+      "id": "github-mcp",
+      "name": "GitHub MCP (read-only)",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env_keys": ["GITHUB_PERSONAL_ACCESS_TOKEN"],
+      "allowed_tools": [
+        "get_repository",
+        "get_file_contents",
+        "list_commits",
+        "get_commit",
+        "list_branches",
+        "get_branch",
+        "list_issues",
+        "get_issue",
+        "get_issue_comments",
+        "search_issues",
+        "list_pull_requests",
+        "get_pull_request",
+        "get_pull_request_files",
+        "get_pull_request_comments",
+        "get_pull_request_reviews",
+        "search_code",
+        "search_repositories"
+      ],
+      "trust_level": "verified",
+      "notes": "read-only。トークンは .env.local の GITHUB_PERSONAL_ACCESS_TOKEN から読む"
+    }
+  ],
+  "rules": {
+    "allow_external_experts": true,
+    "allow_world_link": true,
+    "require_user_consent_before_external_mcp": true,
+    "store_conversation_logs": true
+  },
+  "nexus_gate": {
+    "enabled": true,
+    "linked_worlds": [
+      {
+        "id": "design-underworld",
+        "name": "Design Underworld",
+        "category": "design",
+        "trust_level": "verified",
+        "available_experts": 18,
+        "color": "#b39bff"
+      },
+      {
+        "id": "legal-underworld",
+        "name": "Legal Underworld",
+        "category": "legal",
+        "trust_level": "verified",
+        "available_experts": 7,
+        "color": "#ffd29b"
+      },
+      {
+        "id": "education-underworld",
+        "name": "Education Underworld",
+        "category": "education",
+        "trust_level": "verified",
+        "available_experts": 12,
+        "color": "#9bffcb"
+      }
+    ]
+  }
+}
